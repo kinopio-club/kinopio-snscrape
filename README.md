@@ -2,6 +2,9 @@
 
 A python3 micro-service that retrieves twitter conversation threads
 
+Hosted on …
+// url
+
 # Install
 
     pip3 install -r requirements.txt
@@ -11,6 +14,7 @@ A python3 micro-service that retrieves twitter conversation threads
     export FLASK_DEBUG=true
     flask run
     http://127.0.0.1:5000
+    http://127.0.0.1:5000/tweets?userId=234&conversationId=234234
 
 # Update Scraper
 
