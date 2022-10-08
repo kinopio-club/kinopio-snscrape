@@ -34,10 +34,12 @@ def run():
 
   for tweet in scraper.get_items():
     # print(dir(tweet))
+
     print('🌷',tweet.conversationId, tweet.content, tweet.url)
 
-# filter by convo id
-
+    # // filter for tweets where tweet.conversationId === conversationId
+    # // create object {}
+    # // push into tweets
 
   return {
     'tweets': tweets
