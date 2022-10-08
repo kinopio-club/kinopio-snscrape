@@ -14,10 +14,10 @@ def hello():
 @app.route('/tweets')
 def run():
   tweets = []
-  userId = request.args.get('userId', '') # TODO use userName instead
+  userName = request.args.get('userName', '')
   conversationId = request.args.get('conversationId', '')
-  print('💖',userId, conversationId)
-  if (not userId or not conversationId):
+  print('💖',userName, conversationId)
+  if (not userName or not conversationId):
     return "Query params missing", 400
 
 
@@ -27,7 +27,7 @@ def run():
   # https://github.com/JustAnotherArchivist/snscrape/issues/552
   print('🍋',snscrape.modules.twitter)
 
-  scraper = snscrape.modules.twitter.TwitterUserScraper('textfiles')
+  scraper = snscrape.modules.twitter.TwitterUserScraper(userName)
   items = scraper.get_items()
 
   print('🍅', next(items))
