@@ -19,11 +19,12 @@ def searchTweets():
   print('🍋',username, conversationId)
   if (not username or not conversationId):
     return "request body missing fields", 400
-  tweets = [{
+  conversationTweet = {
     "conversationId": conversationId,
     "text": body['text'],
     "url": body['url']
-  }]
+  }
+  tweets = []
   # search
   search = f'conversation_id:{conversationId} from:{username} to:{username}'
   print('🕊',search)
@@ -36,9 +37,8 @@ def searchTweets():
       "url": tweet.url
     })
   tweets.reverse()
-  return {
-    'tweets': tweets
-  }
+  tweets.insert(0, conversationTweet)
+  return tweets
 
 
 # print(dir(tweet))
