@@ -10,51 +10,37 @@ def hello():
     'docs': 'https://github.com/kinopio-club/kinopio-twitter'
   }
 
-
-@app.route('/tweets')
-def run():
-  userName = request.args.get('userName', '')
-  conversationId = request.args.get('conversationId', '')
-  print('💖',userName, conversationId)
-  if (not userName or not conversationId):
-    return "Query params missing", 400
-  conversationId = int(conversationId)
-  # 🕊 Search for every tweet by the user, and filter for tweets with the right conversation id
-  # https://github.com/JustAnotherArchivist/snscrape/issues/552
-  scraper = snscrape.modules.twitter.TwitterUserScraper(userName)
+@app.route('/twitter-thread', methods = ['POST'])
+def searchTweets():
+  # init params
+  body = request.json
+  username = body['username']
+  conversationId = body['conversationId']
+  print('🍋',username, conversationId)
+  if (not username or not conversationId):
+    return "request body missing fields", 400
+  tweets = [{
+    "conversationId": conversationId,
+    "text": body['text'],
+    "url": body['url']
+  }]
+  # search
+  search = f'conversation_id:{conversationId} from:{username} to:{username}'
+  print('🕊',search)
+  scraper = snscrape.modules.twitter.TwitterSearchScraper(search)
   items = scraper.get_items()
-  tweets = []
-  index = 0
-  endIndex = None
-  hasMatched = False
   for tweet in scraper.get_items():
-    if index == endIndex:
-      print('💣 SHOULD TERMINATE', tweets)
-      break
-    if tweet.conversationId == conversationId:
-      tweets.append({
-        "conversationId": tweet.conversationId,
-        "content": tweet.content,
-        "url": tweet.url
-      })
-      if not hasMatched:
-        hasMatched = True
-        endIndex = index + 100
-    index += 1
+    tweets.append({
+      "conversationId": tweet.conversationId,
+      "text": tweet.content,
+      "url": tweet.url
+    })
+  tweets.reverse()
   return {
     'tweets': tweets
   }
 
 
-  # add error / 500 returns when scraper fails (eg userid is wrong or something)
-
-
-# http://127.0.0.1:5000/tweets?userId=234&conversationId=234234
-
-# conversationId
-# quotedTweet
-# inReplyToTweetId
-# inReplyToUser
 
 # print(dir(tweet))
 # ['__annotations__',
@@ -62,5 +48,5 @@ def run():
 #  'content', 'conversationId', 'coordinates', 'date', 'hashtags', 'id', 'inReplyToTweetId', 'inReplyToUser', 'json', 'lang', 'likeCount',
 #  'media', 'mentionedUsers', 'outlinks', 'outlinksss', 'place', 'quoteCount', 'quotedTweet', 'renderedContent', 'replyCount', 'retweetCount', 'retweetedTweet', 'source', 'sourceLabel', 'sourceUrl', 'tcooutlinks', 'tcooutlinksss', 'url', 'user', 'username']
 
-# may not need to do
-    # index: after the first convo match, search 100 more then break with what we've got
+  # TODO SERVER get tweet, if id is not conversation id ,then get tweet w conversation id, pass that to snscrape
+  # SERVER handles error / 500 returns when scraper fails (eg userid is wrong or something)
