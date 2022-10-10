@@ -2,18 +2,14 @@
 
 A python3 micro-service that retrieves twitter conversation threads
 
-Hosted on …
-// url
+Hosted on [railway.app](https://railway.app/project/84754a18-6964-4798-89b4-d97afe29497b)
 
 # Install
 
     pip3 install -r requirements.txt
 
 # Run
-
-    export FLASK_APP=app
-    export FLASK_DEBUG=true
-    flask run
+    python3 main.py
     http://127.0.0.1:5000
 
 # Routes
