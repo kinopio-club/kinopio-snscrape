@@ -13,34 +13,34 @@ def hello():
 
 @app.route('/tweets')
 def run():
-  tweets = []
   userName = request.args.get('userName', '')
   conversationId = request.args.get('conversationId', '')
   print('💖',userName, conversationId)
   if (not userName or not conversationId):
     return "Query params missing", 400
-
-
-
-  # search for every tweet by the user, and filter for tweets with the right conversation id
-
+  conversationId = int(conversationId)
+  # 🕊 Search for every tweet by the user, and filter for tweets with the right conversation id
   # https://github.com/JustAnotherArchivist/snscrape/issues/552
-  print('🍋',snscrape.modules.twitter)
-
   scraper = snscrape.modules.twitter.TwitterUserScraper(userName)
   items = scraper.get_items()
-
-  print('🍅', next(items))
-
+  tweets = []
+  index = 0
+  endIndex = None
+  hasMatched = False
   for tweet in scraper.get_items():
-    # print(dir(tweet))
-
-    print('🌷',tweet.conversationId, tweet.content, tweet.url)
-
-    # // filter for tweets where tweet.conversationId === conversationId
-    # // create object {}
-    # // push into tweets
-
+    if index == endIndex:
+      print('💣 SHOULD TERMINATE', tweets)
+      break
+    if tweet.conversationId == conversationId:
+      tweets.append({
+        "conversationId": tweet.conversationId,
+        "content": tweet.content,
+        "url": tweet.url
+      })
+      if not hasMatched:
+        hasMatched = True
+        endIndex = index + 100
+    index += 1
   return {
     'tweets': tweets
   }
@@ -56,7 +56,11 @@ def run():
 # inReplyToTweetId
 # inReplyToUser
 
+# print(dir(tweet))
 # ['__annotations__',
 # '__class__', '__dataclass_fields__', '__dataclass_params__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', 'cashtags',
 #  'content', 'conversationId', 'coordinates', 'date', 'hashtags', 'id', 'inReplyToTweetId', 'inReplyToUser', 'json', 'lang', 'likeCount',
 #  'media', 'mentionedUsers', 'outlinks', 'outlinksss', 'place', 'quoteCount', 'quotedTweet', 'renderedContent', 'replyCount', 'retweetCount', 'retweetedTweet', 'source', 'sourceLabel', 'sourceUrl', 'tcooutlinks', 'tcooutlinksss', 'url', 'user', 'username']
+
+# may not need to do
+    # index: after the first convo match, search 100 more then break with what we've got
