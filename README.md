@@ -10,11 +10,15 @@ Hosted on …
     pip3 install -r requirements.txt
 
 # Run
+
     export FLASK_APP=app
     export FLASK_DEBUG=true
     flask run
     http://127.0.0.1:5000
-    http://127.0.0.1:5000/tweets?userId=234&conversationId=234234
+
+# Routes
+
+    http://127.0.0.1:5000/twitter-thread (body: text, username, conversationId, url)
 
 # Update Scraper
 
